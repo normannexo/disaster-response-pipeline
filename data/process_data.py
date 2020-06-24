@@ -6,6 +6,16 @@ from sqlalchemy import create_engine
 
 
 def load_data(messages_filepath, categories_filepath):
+    """
+    loads messages and categories data from given file paths
+
+    Parameters:
+        messages_filepath (str): the path to the messages csv file
+        categories_filepath (str): the path to the categories csv file
+    Returns:
+        data frame: a pandas data frame with the merged messages and category data
+    """
+
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath )
     #merge the data sets:
@@ -14,6 +24,14 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
+    """
+    cleans the data frame loaded from the csv raw data
+
+    Parameters:
+        df: the pandas data frame loaded with load_data()
+    Returns:
+        data frame: a pandas data frame with cleaned data
+    """
     # split values in the categories columns on ';' into different columns
     categories = df['categories'].str.split(";", expand=True)
     # select first row of the categories data frame and extract list
@@ -37,6 +55,14 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
+     """
+    saves data frame to sqlite database
+
+    Parameters:
+        df: pandas data frame with cleaned data
+        database_filename: the filename of the sqlite database
+    """
+
     engine = create_engine('sqlite:///' + database_filename)
     df.to_sql('etl', engine, index=False)
 
