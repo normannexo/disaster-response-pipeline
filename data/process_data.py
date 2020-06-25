@@ -61,8 +61,12 @@ def save_data(df, database_filename):
         df - pandas data frame to export
         database_filename - the filename of the sqlite database
     """
-    engine = create_engine('sqlite:///' + database_filename)
-    df.to_sql('etl', engine, index = False)
+    try:
+        engine = create_engine('sqlite:///' + database_filename)
+        df.to_sql('etl', engine, index = False)
+    except Exception as e:
+        print(e)
+
 
 def main():
     if len(sys.argv) == 4:
