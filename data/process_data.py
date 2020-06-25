@@ -55,21 +55,17 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
-     """
-    saves data frame to sqlite database
-
-    Parameters:
-        df: pandas data frame with cleaned data
-        database_filename: the filename of the sqlite database
     """
-
+    saves data to sqlite data base
+    Parameters:
+        df - pandas data frame to export
+        database_filename - the filename of the sqlite database
+    """
     engine = create_engine('sqlite:///' + database_filename)
-    df.to_sql('etl', engine, index=False)
-
+    df.to_sql('etl', engine, index = False)
 
 def main():
     if len(sys.argv) == 4:
-
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
 
         print('Loading data...\n    MESSAGES: {}\n    CATEGORIES: {}'

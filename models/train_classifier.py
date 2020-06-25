@@ -11,6 +11,17 @@ from nltk import sent_tokenize, word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV
+from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score, confusion_matrix
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.multioutput import MultiOutputClassifier
+from sklearn.metrics import classification_report
+
+import pickle
 
 
 
@@ -22,7 +33,9 @@ def load_data(database_filepath):
     X = df.message
     Y = df[['related', 'offer','aid_related']]
     cat_names = df.columns[4:]
+    Y = df[list(cat_names)]
     print(list(cat_names))
+    print(X.shape)
     return X, Y, list(cat_names)
 
 
@@ -49,14 +62,50 @@ def build_model():
     ('clf', MultiOutputClassifier(RandomForestClassifier()))
     
     ])
-    return pipeline
+    parameters =  {
+              'clf__estimator__n_estimators': [50, 100]
+    }
+    cv = GridSearchCV(pipeline, param_grid=parameters, cv=2,verbose=10, n_jobs=-1)
+    return cv
+
+def make_report(y_true, y_pred):
+    """
+    Generate a performance report for a multiclass prediction
+    INPUT:
+        y_true - true labels
+        y_pred - predicted labels
+
+    """
+    for i, col in enumerate(list(y_true.columns)):
+        print(col)
+        report = classification_report(y_true[col], y_pred[:,i], output_dict=False, zero_division=0)
+        print(report)
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    """
+    Evaluates model and generates performance report
+    Parameters:
+        model - the ML model
+        X_test - test data
+        Y_test - labels from test data
+        category_names - list of category names
+    """
+    y_pred = model.predict(X_test)
+    make_report(Y_test, y_pred)
     
 
 
+
 def save_model(model, model_filepath):
-    pass
+    """
+    saves mode as pickle file
+
+    Parameters:
+        model - the ML model to export
+        model_filepath - file path of the pickle file
+    """
+    with open(model_filepath, 'wb') as file:
+        pickle.dump(model, file)
 
 
 def main():
