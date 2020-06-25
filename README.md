@@ -18,7 +18,7 @@ The project comprises the following sections:
     - Trains and tunes a model using GridSearchCV
     - Outputs results on the test set
     - Exports the final model as a pickle file
-3. Builduing a Flask Web App that
+3. Building a **Flask Web App** that
     - Visualizes features of the training data
     - Classifies messages entered by the user according to the ML model built in step 2
 

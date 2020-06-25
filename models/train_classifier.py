@@ -21,7 +21,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.metrics import classification_report
 
-import pickle
+import joblib
 
 
 
@@ -105,7 +105,7 @@ def save_model(model, model_filepath):
         model_filepath - file path of the pickle file
     """
     with open(model_filepath, 'wb') as file:
-        pickle.dump(model, file)
+        joblib.dump(model, file)
 
 
 def main():
